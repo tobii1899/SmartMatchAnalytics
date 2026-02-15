@@ -42,20 +42,7 @@ export class MatchDetails implements OnInit {
     let home = 0;
     let away = 0;
 
-    for (const ev of details.events) {
-
-      if (ev.action !== 'Goal') continue;
-
-      const player = details.players
-        .find((p: any) => p.name === ev.name);
-
-      if (!player) continue;
-
-      if (player.team === details.homeTeam) home++;
-      if (player.team === details.awayTeam) away++;
-    }
-
-    console.log('Match Details:', this.matchDetails());
+    //logic for getscore
 
     return `(${home}:${away})`;
   }
