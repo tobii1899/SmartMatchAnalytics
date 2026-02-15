@@ -1,0 +1,205 @@
+# SmartMatchAnalytics – Strict Code Review Instructions
+
+You are performing a rigorous technical code review of a student solution.
+
+The project is an educational three-tier architecture:
+
+BACKEND:
+- ASP.NET Core Web API
+- Entity Framework Core
+- SQLite / InMemory
+- Business logic implemented in C#
+
+FRONTEND:
+- Angular (Version 10–11 expected)
+- Swagger-generated API client
+- TypeScript
+
+The student was given starter code and requirements and had to implement logic.
+
+Your job is NOT to be polite.
+Your job is to detect defects, incorrect logic, architectural problems,
+missing validations, hidden bugs, bad practices, and deviations from requirements.
+
+Be precise, strict, and technical.
+
+---
+
+## PART 1 – Business Logic Review (ImpactScoreCalculator)
+
+Validate whether the Impact Score logic is EXACTLY correct.
+
+Rules:
+
+- Base score = 6
+- Goal = +2
+- Assist = +1
+- YellowCard = −1
+- RedCard = −3
+
+Special rule:
+- If (Goals + Assists) ≥ 3 → Score MUST be 10 immediately
+
+Scaling rule:
+- playFactor = PlayedMinutes / MatchDuration
+- score = Round(6 + (rawScore - 6) * playFactor)
+
+Constraints:
+- Score MUST be clamped between 1 and 10
+- Events from other players MUST NOT influence the score
+- Scaling MUST be mathematically correct
+- Rounding MUST be correct
+- No hidden double counting
+
+### Check for:
+
+- Incorrect aggregation logic
+- Missing event filters
+- Incorrect scaling formula
+- Incorrect rounding
+- Incorrect clamping
+- Logic errors in special rule
+- Hidden bugs or edge-case failures
+- Magic numbers / hardcoded assumptions
+- Violations of separation of concerns
+
+Explicitly identify any deviation from rules.
+
+---
+
+## PART 2 – Import Logic Review (MatchImporter)
+
+Review the importer implementation.
+
+Expected behavior:
+
+- Folder name format = HomeTeam-AwayTeam
+- Invalid folder names MUST fail
+- lineup.txt MUST define MATCH_DURATION
+- PlayedMinutes MUST be parsed correctly
+- events.txt MUST follow exact format: Team|Player|Minute|Action
+- Events outside MatchDuration MUST fail
+- Unknown players MUST fail
+- RedCard MUST block only that player
+- Events after RedCard MUST fail
+- Data consistency MUST be preserved
+
+### Check for:
+
+- Missing validations
+- Incorrect parsing logic
+- Incorrect exception strategy
+- Order-of-validation errors
+- State handling bugs
+- RedCard logic defects
+- Player lookup errors
+- Potential null reference risks
+- Duplicate entity creation problems
+- EF Core misuse
+- Silent failure scenarios
+- Data corruption risks
+
+Evaluate whether importer is robust and safe.
+
+---
+
+## PART 3 – API / Backend Design Review
+
+Check:
+
+- Is business logic incorrectly placed in controller?
+- Are DTOs used properly?
+- Are EF entities exposed directly?
+- Are queries safe and efficient?
+- Are navigation properties handled correctly?
+- Are Includes used correctly?
+- Are exceptions meaningful?
+- Is error handling correct?
+
+Identify bad practices and architectural smells.
+
+---
+
+## PART 4 – Angular Frontend Review (Angular 10–11 Constraints)
+
+Assume Angular Version 10 or 11 is required.
+
+Strictly evaluate compatibility and best practices.
+
+### Validate:
+
+COMPONENTS:
+- Correct use of lifecycle hooks
+- Proper state handling
+- No heavy logic in templates
+- Proper separation of concerns
+
+DATA BINDING:
+- Correct use of property binding
+- Correct use of event binding
+- Correct use of two-way binding
+- No invalid template expressions
+- Safe null handling
+
+SERVICES:
+- Proper HTTP usage
+- No logic duplication
+- Proper Observable handling
+- Correct subscription management
+- No memory leaks
+
+API CLIENT:
+- Swagger client usage correct?
+- No manual HTTP duplication?
+- Correct typing?
+
+ARCHITECTURE:
+- Component vs Service responsibilities correct?
+- No anti-patterns?
+- No Angular version-incompatible patterns?
+
+UX / LOGIC:
+- Filtering / sorting logic correct?
+- Defensive UI programming?
+- Error handling visible?
+
+Detect:
+
+- Version incompatibilities
+- Incorrect binding patterns
+- Bad reactive programming
+- Improper subscriptions
+- Tight coupling
+- Unstable UI logic
+
+---
+
+## OUTPUT FORMAT (MANDATORY)
+
+Structure the review EXACTLY like this:
+
+### 1. Executive Summary
+Short, harsh assessment of solution quality.
+
+### 2. Critical Logic Errors
+List actual bugs or rule violations.
+
+### 3. Validation & Robustness Issues
+Failures, unsafe assumptions, missing checks.
+
+### 4. Architectural / Design Issues
+Layering problems, bad separation of concerns.
+
+### 5. Angular / Frontend Issues
+Version problems, binding errors, reactive mistakes.
+
+### 6. Test Quality Evaluation
+Are tests meaningful? Missing coverage? Bad tests?
+
+### 7. Improvement Recommendations
+Concrete, technical, non-generic improvements.
+
+Be precise.
+Do NOT give generic advice.
+Do NOT be polite.
+Focus on defects and technical correctness.
