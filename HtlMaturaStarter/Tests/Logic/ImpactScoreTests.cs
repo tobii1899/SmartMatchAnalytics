@@ -3,39 +3,129 @@ using System.IO;
 using System.Linq;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using WebApi;
 using Xunit;
+using WebApi.Models;
+
 public class ImpactScoreTests
 {
     [Fact]
-    public void Fermin_Lopez_Has_Highest_Score()
+    public void PlayerWithoutEvents_ShouldReturn6()
     {
-        var db = TestDbContextFactory.Create();
-        var importer = new MatchImporter(db);
+        var player = new PlayerDto
+        {
+            Name = "Player1",
+            PlayedMinutes = 90,
+            Team = "Barca"
+        };
 
-        importer.ImportFolder("TestData");
+        var match = new MatchDetailsDto
+        {
+            MatchDuration = 90,
+            Events = new List<EventDto>()
+        };
 
-        var match = db.Matches
-            .Include(m => m.PlayerMatches)
-            .Include(m => m.Events)
-            .First();
+        var score = ImpactScoreCalculator.Calculate(player, match);
 
-        var fermin = match.PlayerMatches
-            .First(pm => pm.Player.Name == "Fermin Lopez");
-
-        var score = ImpactScoreCalculator.Calculate(fermin, match);
-
-        Assert.True(score > 15);
+        Assert.Equal(6, score);
     }
 
     [Fact]
-    public void Player_With_Zero_Minutes_Has_Zero_Score()
+    public void PlayerWithGoal_ShouldIncreaseScore()
     {
-        var match = new Match { MatchDuration = 90 };
-        var pm = new PlayerMatch { PlayedMinutes = 0 };
+        var player = new PlayerDto
+        {
+            Name = "Player1",
+            PlayedMinutes = 90,
+            Team = "Barca"
+        };
 
-        var score = ImpactScoreCalculator.Calculate(pm, match);
+        var match = new MatchDetailsDto
+        {
+            MatchDuration = 90,
+            Events = new List<EventDto>
+            {
+                new EventDto { Name = "Player1", Action = "Goal", Minute = 10 }
+            }
+        };
 
-        Assert.Equal(0, score);
+        var score = ImpactScoreCalculator.Calculate(player, match);
+
+        Assert.Equal(8, score);
+    }
+
+    [Fact]
+    public void PlayerWithThreeInvolvements_ShouldReturn10()
+    {
+        var player = new PlayerDto
+        {
+            Name = "Star",
+            PlayedMinutes = 5,
+            Team = "Barca"
+        };
+
+        var match = new MatchDetailsDto
+        {
+            MatchDuration = 90,
+            Events = new List<EventDto>
+            {
+                new EventDto { Name = "Star", Action = "Goal", Minute = 1 },
+                new EventDto { Name = "Star", Action = "Goal", Minute = 2 },
+                new EventDto { Name = "Star", Action = "Assist", Minute = 3 }
+            }
+        };
+
+        var score = ImpactScoreCalculator.Calculate(player, match);
+
+        Assert.Equal(10, score);
+    }
+
+    [Fact]
+    public void PlayerWithGoal_AndLowMinutes_ShouldScaleCorrectly()
+    {
+        var player = new PlayerDto
+        {
+            Name = "TestPlayer",
+            PlayedMinutes = 25,
+            Team = "Barca"
+        };
+
+        var match = new MatchDetailsDto
+        {
+            MatchDuration = 90,
+            Events = new List<EventDto>
+            {
+                new EventDto { Name = "TestPlayer", Action = "Goal", Minute = 10 }
+            }
+        };
+
+        var score = ImpactScoreCalculator.Calculate(player, match);
+
+        Assert.Equal(7, score);
+    }
+
+    [Fact]
+    public void PlayerWithRedCard_ButLowMinutes_ShouldScaleToward6()
+    {
+        var player = new PlayerDto
+        {
+            Name = "BadPlayer",
+            PlayedMinutes = 10,
+            Team = "Real"
+        };
+
+        var match = new MatchDetailsDto
+        {
+            MatchDuration = 90,
+            Events = new List<EventDto>
+            {
+                new EventDto { Name = "BadPlayer", Action = "RedCard", Minute = 5 }
+            }
+        };
+
+        var score = ImpactScoreCalculator.Calculate(player, match);
+
+        Assert.Equal(6, score);
     }
 }

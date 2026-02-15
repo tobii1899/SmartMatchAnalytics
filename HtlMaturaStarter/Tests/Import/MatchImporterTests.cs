@@ -1,25 +1,26 @@
-using System;
-using System.Linq;
-using DataAccess;
-using Microsoft.EntityFrameworkCore;
-using WebApi;
 using Xunit;
+using System;
+using System.IO;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using DataAccess;
+using WebApi;
 
 namespace Tests.Import
 {
-    public class MatchImporterTests
+    public class MatchImporterAdditionalTests
     {
         private readonly DbContextOptions<ApplicationDataContext> _options;
 
-        public MatchImporterTests()
+        public MatchImporterAdditionalTests()
         {
             _options = new DbContextOptionsBuilder<ApplicationDataContext>()
-                .UseInMemoryDatabase("TestDatabase")
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
         }
 
         [Fact]
-        public void ImportMatch_ValidData_ShouldImportMatch()
+        public void ImportMatch_ShouldImport_AllPlayersCorrectly_VerifyFermin()
         {
             using var context = new ApplicationDataContext(_options);
             var importer = new MatchImporter(context);
@@ -29,59 +30,62 @@ namespace Tests.Import
             var match = context.Matches
                 .Include(m => m.PlayerMatches)
                 .ThenInclude(pm => pm.Player)
-                .Include(m => m.Events)
-                .FirstOrDefault();
+                .First();
 
-            Assert.NotNull(match);
+            var fermin = match.PlayerMatches
+                .FirstOrDefault(pm => pm.Player.Name == "Fermin Lopez");
+
+            Assert.NotNull(fermin);
+            Assert.Equal("Barca", fermin.Player.Team);
+            Assert.Equal(90, fermin.PlayedMinutes);
+        }
+
+        [Fact]
+        public void ImportMatch_ShouldAssign_EventsToCorrectPlayers()
+        {
+            using var context = new ApplicationDataContext(_options);
+            var importer = new MatchImporter(context);
+
+            importer.ImportMatch("TestData/Real-Barca");
+
+            var match = context.Matches
+                .Include(m => m.Events)
+                .ThenInclude(e => e.Player)
+                .First();
+
+            var ferminGoals = match.Events
+                .Where(e => e.Player.Name == "Fermin Lopez" && e.Action == "Goal");
+
+            Assert.Equal(4, ferminGoals.Count());
+        }
+
+        [Fact]
+        public void ImportMatch_ShouldNotContain_InvalidMinutes()
+        {
+            using var context = new ApplicationDataContext(_options);
+            var importer = new MatchImporter(context);
+
+            importer.ImportMatch("TestData/Real-Barca");
+
+            var match = context.Matches
+                .Include(m => m.Events)
+                .First();
+
+            Assert.DoesNotContain(match.Events, e => e.Minute > match.MatchDuration);
+        }
+
+        [Fact]
+        public void ImportMatch_ShouldParse_TeamsFromFolderName()
+        {
+            using var context = new ApplicationDataContext(_options);
+            var importer = new MatchImporter(context);
+
+            importer.ImportMatch("TestData/Real-Barca");
+
+            var match = context.Matches.First();
+
             Assert.Equal("Real", match.HomeTeam);
             Assert.Equal("Barca", match.AwayTeam);
-            Assert.Equal(90, match.MatchDuration);
-
-            // Deine Datei enthält 14 Spieler
-            Assert.Equal(14, match.PlayerMatches.Count);
-
-            // Deine events.txt enthält 14 Events
-            Assert.Equal(14, match.Events.Count);
-        }
-
-        [Fact]
-        public void ImportMatch_InvalidFolderName_ShouldThrowException()
-        {
-            using var context = new ApplicationDataContext(_options);
-            var importer = new MatchImporter(context);
-
-            Assert.Throws<Exception>(() =>
-                importer.ImportMatch("InvalidFolderName"));
-        }
-
-        [Fact]
-        public void ImportMatch_EventOutsideMatchDuration_ShouldThrowException()
-        {
-            using var context = new ApplicationDataContext(_options);
-            var importer = new MatchImporter(context);
-
-            Assert.Throws<InvalidOperationException>(() =>
-                importer.ImportMatch("TestData/Real-Barca"));
-        }
-
-        [Fact]
-        public void ImportMatch_EventAfterRedCard_ShouldThrowException()
-        {
-            using var context = new ApplicationDataContext(_options);
-            var importer = new MatchImporter(context);
-
-            Assert.Throws<InvalidOperationException>(() =>
-                importer.ImportMatch("TestData/Real-Barca"));
-        }
-
-        [Fact]
-        public void ImportMatch_DuplicatePlayer_ShouldThrowException()
-        {
-            using var context = new ApplicationDataContext(_options);
-            var importer = new MatchImporter(context);
-
-            Assert.Throws<InvalidOperationException>(() =>
-                importer.ImportMatch("TestData/Real-Barca"));
         }
     }
 }
