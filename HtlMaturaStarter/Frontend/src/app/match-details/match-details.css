@@ -1,0 +1,163 @@
+.page {
+  padding: 40px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f5f7;
+  min-height: 100vh;
+}
+
+.header-card {
+  background: white;
+  border-radius: 22px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.teams {
+  font-size: 26px;
+  font-weight: 600;
+  display: flex;
+  gap: 10px;
+}
+
+.vs {
+  color: #888;
+}
+
+.meta {
+  margin-top: 6px;
+  color: #666;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.player-row {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;          /* 🔥 DAS MACHT DEN ABSTAND */
+}
+
+.player-name {
+  font-weight: 500;
+}
+
+.player-team {
+  font-size: 13px;
+  color: #777;
+}
+
+.player-stats {
+  text-align: right;
+  font-size: 14px;
+}
+
+.score {
+  color: #007aff;
+  font-weight: 500;
+}
+
+.event-row {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  padding: 6px 0;
+}
+
+.minute {
+  color: #999;
+  width: 40px;
+}
+
+.action {
+  color: #007aff;
+}
+
+.error {
+  color: #ff3b30;
+  padding: 20px;
+}
+
+
+.event-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  transition: 0.15s;
+}
+
+.event-row:hover {
+  background: #f5f5f7;
+}
+
+.minute {
+  width: 40px;
+  color: #999;
+  font-size: 13px;
+}
+
+.icon {
+  width: 22px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.text {
+  display: flex;
+  gap: 6px;
+}
+
+.action {
+  color: #666;
+}
+
+/* 🔥 Highlights */
+
+.goal {
+  background: rgba(52, 199, 89, 0.12);
+}
+
+.goal .action {
+  color: #34c759;
+  font-weight: 500;
+}
+
+.yellow {
+  background: rgba(255, 204, 0, 0.18);
+}
+
+.yellow .action {
+  color: #b08900;
+  font-weight: 500;
+}
+
+.red {
+  background: rgba(255, 59, 48, 0.12);
+}
+
+.red .action {
+  color: #ff3b30;
+  font-weight: 500;
+}

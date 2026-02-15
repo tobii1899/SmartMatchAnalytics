@@ -1,0 +1,14 @@
+Barca|Fermin Lopez|5|Goal
+Barca|Fermin Lopez|18|Goal
+Barca|Lewandowski|22|Goal
+Real|Rüdiger|25|YellowCard
+Barca|Fermin Lopez|33|Goal
+Real|Modric|40|YellowCard
+Barca|Lewandowski|48|Assist
+Barca|Fermin Lopez|49|Goal
+Barca|Gavi|55|YellowCard
+Real|Carvajal|58|RedCard
+Barca|Yamal|65|Goal
+Barca|De Jong|72|Assist
+Barca|Yamal|74|Goal
+Real|Bellingham|80|YellowCard

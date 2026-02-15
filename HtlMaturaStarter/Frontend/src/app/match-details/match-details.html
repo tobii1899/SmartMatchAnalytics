@@ -1,0 +1,59 @@
+@if (matchDetails(); as details) {
+
+  <div class="page">
+
+    <div class="header-card">
+      <div class="teams">
+        <span>{{ details.homeTeam }}</span>
+        <span class="vs">vs</span>
+        <span>{{ details.awayTeam }}</span>
+        {{ getScore() }}
+      </div>
+
+      <div class="meta">
+        {{ details.matchDuration }} min
+      </div>
+    </div>
+
+    <div class="content-grid">
+
+      <div class="card">
+        <h3>Players</h3>
+
+        @for (player of details.players; track player.id) {
+          <div class="player-row">
+            <span>{{ player.name }}</span>
+            <span>{{ player.team }}</span>
+            <span>{{ player.playedMinutes }} min</span>
+            <span>Score: {{ player.score }}</span>
+          </div>
+        }
+
+      </div>
+
+      <div class="card">
+        <h3>Events</h3>
+
+        @for (event of details.events; track event.id) {
+          <div class="event-row"
+               [ngClass]="getEventClass(event.action)">
+
+            <span class="minute">{{ event.minute }}'</span>
+
+            <span class="icon">
+              {{ getEventIcon(event.action) }}
+            </span>
+
+            <span class="text">
+              <strong>{{ event.name }}</strong>
+              <span class="action">{{ event.action }}</span>
+            </span>
+
+          </div>
+        }
+
+      </div>
+
+    </div>
+  </div>
+}

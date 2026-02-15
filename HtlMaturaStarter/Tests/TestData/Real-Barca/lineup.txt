@@ -1,0 +1,14 @@
+MATCH_DURATION=90
+Real|Courtois|90
+Real|Carvajal|90
+Real|Rüdiger|90
+Real|Bellingham|90
+Real|Modric|60
+Real|Joselu|30
+Barca|Ter Stegen|90
+Barca|Araujo|90
+Barca|De Jong|90
+Barca|Gavi|70
+Barca|Fermin Lopez|90
+Barca|Lewandowski|65
+Barca|Yamal|25

@@ -1,0 +1,22 @@
+/* Styles for the match import component */
+.match-import {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.match-import input {
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 300px;
+}
+
+.match-import button {
+  padding: 5px 10px;
+}
+
+.match-import p {
+  margin-top: 10px;
+  color: green;
+}

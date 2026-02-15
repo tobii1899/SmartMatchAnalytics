@@ -1,0 +1,37 @@
+<div class="page">
+
+  <h1>Matches</h1>
+
+  <div class="match-container">
+
+    @for (match of matches(); track match.id) {
+
+      <div class="match-card"
+           (click)="openMatch(match.id)">
+
+        <div class="row">
+
+          <div class="teams">
+            {{ match.homeTeam }}
+            <span class="vs">vs</span>
+            {{ match.awayTeam }}
+          </div>
+
+          <div class="duration">
+            {{ match.matchDuration }} min
+          </div>
+
+        </div>
+
+        <div class="meta">
+          @if (match.isLive) {
+            <span class="live">LIVE</span>
+          }
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+</div>
