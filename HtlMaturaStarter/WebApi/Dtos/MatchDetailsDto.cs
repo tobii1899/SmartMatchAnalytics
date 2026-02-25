@@ -7,4 +7,5 @@ public class MatchDetailsDto
 
     public List<PlayerDto> Players { get; set; }
     public List<EventDto> Events { get; set; }
+    public List<ImpactScoreDto>? ImpactScores{get;set;} = null; 
 }

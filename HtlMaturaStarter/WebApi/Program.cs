@@ -20,27 +20,23 @@ builder.AddSqliteDbContext<ApplicationDataContext>("sqlite-db");
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
+// Add Swagger services
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseCors();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
-app.MapControllers();
 
-/*
-app.MapPost("/live/event", (LiveMatchService svc, LiveEventDto dto) =>
-{
-    try
-    {
-        svc.AddEvent(dto.MatchId, dto.PlayerId, dto.Minute, dto.Action);
-        return Results.Ok();
-    }
-    catch (Exception ex)
-    {
-        return Results.BadRequest(ex.Message);
-    }
-});
-*/
+app.MapMatchEndpoints();
 
 app.Run();

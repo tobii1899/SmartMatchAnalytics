@@ -29,6 +29,9 @@ public static class ImpactScoreCalculator
         }
         }
         
+        double playFactor = (double)player.PlayedMinutes / match.MatchDuration;
+        impactScore = (int)Math.Round(6 + (impactScore - 6) * playFactor);      
+        
         return impactScore;
     } 
 }
