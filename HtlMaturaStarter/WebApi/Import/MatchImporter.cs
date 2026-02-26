@@ -12,14 +12,14 @@ public class MatchImporter
         _db = db;
     }
 
-    public void ImportFolder(string rootFolder)
+    public async Task ImportFolder(string rootFolder)
     {
         Console.WriteLine($"Importing folder: {rootFolder}");
         
         foreach (var dir in Directory.GetDirectories(rootFolder))
         {
             Console.WriteLine($"Importing folder: {dir}");
-            ImportMatch(dir);
+            await ImportMatch(dir);
         }
     }
 

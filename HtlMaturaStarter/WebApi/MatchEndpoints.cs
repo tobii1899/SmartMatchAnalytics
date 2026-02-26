@@ -8,17 +8,17 @@ public static class MatchEndpoints
     {
         var group = app.MapGroup("/api/v1").WithTags("Matches");
 
-        group.MapPost("/matches", async (ApplicationDataContext context, string path) =>
+        group.MapPost("/matches", async (ApplicationDataContext context, ImportMatchRequest request) =>
         {
             try
             {
                 var importer = new MatchImporter(context);
-                await importer.ImportMatch(path);
-                return Results.Ok();
+                await importer.ImportMatch(request.Path);
+                return Results.Ok(new { message = "Match imported successfully" });
             }
             catch(Exception ex)
             {
-                return Results.BadRequest(ex.Message);
+                return Results.BadRequest(new { error = ex.Message });
             }
             
         }).Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status400BadRequest);
@@ -100,3 +100,5 @@ public static class MatchEndpoints
         return Results.Ok(matchDetails);
     }    
 }
+
+public record ImportMatchRequest(string Path);
