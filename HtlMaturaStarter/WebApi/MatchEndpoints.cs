@@ -23,15 +23,23 @@ public static class MatchEndpoints
             
         }).Produces(StatusCodes.Status200OK).Produces(StatusCodes.Status400BadRequest);
 
-        group.MapGet("/matches", async (ApplicationDataContext context) =>{ await context.Matches.ToListAsync();
+        group.MapGet("/matches", async (ApplicationDataContext context) =>{ 
+            var matches = await context.Matches.ToListAsync();
+            return matches.Select(m => new MatchDto
+            {
+                HomeTeam = m.HomeTeam,
+                AwayTeam = m.AwayTeam,
+                MatchDuration = m.MatchDuration
+            }).ToList();
         }).Produces<List<MatchDto>>(StatusCodes.Status200OK);
 
-        group.MapGet("/match/detail/:id", ProduceMatchDetails)
+        group.MapGet("/match/detail/{id}", ProduceMatchDetails)
         .Produces<MatchDetailsDto>(StatusCodes.Status200OK).Produces(StatusCodes.Status404NotFound);
 
-        group.MapGet("/match/detailscore/:id", async (ApplicationDataContext context, int id) =>{
-            await ProduceMatchDetails(context, id, true);
-        });
+        group.MapGet("/match/detailscore/{id}", async (ApplicationDataContext context, int id) =>{
+            return await ProduceMatchDetails(context, id, true);
+        })
+        .Produces<MatchDetailsDto>(StatusCodes.Status200OK).Produces(StatusCodes.Status404NotFound);
 
         return app;
     }
