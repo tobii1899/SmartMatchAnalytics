@@ -28,7 +28,7 @@ export class MatchDetails implements OnInit {
       return;
     }
 
-    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/match/detail/${id}`)
+    this.http.get<MatchDetailsDto>(`${environment.apiBaseUrl}/api/v1/match/detailscore/${id}`)
       .subscribe({
         next: data => this.matchDetails.set(data),
         error: err => this.errorMessage = err.error
@@ -61,6 +61,16 @@ export class MatchDetails implements OnInit {
       case 'RedCard': return '🟥';
       default: return '•';
     }
+  }
+
+  getImpactScore(name : string){
+    console.log(this.matchDetails()?.players);
+    let impactScore =  this.matchDetails()?.impactScores?.find(m => m.player?.name == name)?.impactScore;
+
+    if (impactScore){
+     return impactScore > 10 ? 10 : impactScore < 0 ? 0 : impactScore;
+    }
+    return -1;
   }
 }
 

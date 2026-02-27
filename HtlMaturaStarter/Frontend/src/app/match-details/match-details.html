@@ -25,7 +25,7 @@
             <span>{{ player.name }}</span>
             <span>{{ player.team }}</span>
             <span>{{ player.playedMinutes }} min</span>
-            <span>Score: {{ player.impactScore }}</span>
+            <span>{{this.getImpactScore(player.name)}}</span>
           </div>
         }
 
