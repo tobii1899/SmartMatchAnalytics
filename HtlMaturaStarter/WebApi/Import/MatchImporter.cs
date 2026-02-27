@@ -174,6 +174,8 @@ public class MatchImporter
                 Action = eventLineElements[3],
                 Minute = minute
             });
+
+            await _db.SaveChangesAsync();
         }
     }
 

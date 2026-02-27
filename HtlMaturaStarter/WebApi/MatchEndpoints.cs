@@ -8,12 +8,15 @@ public static class MatchEndpoints
     {
         var group = app.MapGroup("/api/v1").WithTags("Matches");
 
-        group.MapPost("/matches", async (ApplicationDataContext context, ImportMatchRequest request) =>
+        group.MapPost("/matches", async (ApplicationDataContext context, ImportMatchRequest request ) =>
         {
             try
             {
+                Console.WriteLine("TESTTEST");
                 var importer = new MatchImporter(context);
                 await importer.ImportMatch(request.Path);
+                await context.SaveChangesAsync();
+
                 return Results.Ok(new { message = "Match imported successfully" });
             }
             catch(Exception ex)
@@ -27,6 +30,7 @@ public static class MatchEndpoints
             var matches = await context.Matches.ToListAsync();
             return matches.Select(m => new MatchDto
             {
+                id = m.Id,
                 HomeTeam = m.HomeTeam,
                 AwayTeam = m.AwayTeam,
                 MatchDuration = m.MatchDuration

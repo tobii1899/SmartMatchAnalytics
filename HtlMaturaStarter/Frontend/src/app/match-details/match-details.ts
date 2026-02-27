@@ -28,7 +28,7 @@ export class MatchDetails implements OnInit {
       return;
     }
 
-    this.http.get<any>(`${environment.apiBaseUrl}/api/match/match-details-with-scores/${id}`)
+    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/match/detail/${id}`)
       .subscribe({
         next: data => this.matchDetails.set(data),
         error: err => this.errorMessage = err.error
