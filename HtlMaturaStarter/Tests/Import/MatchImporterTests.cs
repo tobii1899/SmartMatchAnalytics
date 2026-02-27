@@ -2,6 +2,7 @@ using Xunit;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DataAccess;
 using WebApi;
@@ -20,12 +21,13 @@ namespace Tests.Import
         }
 
         [Fact]
-        public void ImportMatch_ShouldImport_AllPlayersCorrectly_VerifyFermin()
+        public async Task ImportMatch_ShouldImport_AllPlayersCorrectly_VerifyFermin()
         {
             using var context = new ApplicationDataContext(_options);
             var importer = new MatchImporter(context);
 
-            importer.ImportMatch("TestData/Real-Barca");
+            await importer.ImportMatch("TestData/Real-Barca");
+            await context.SaveChangesAsync();
 
             var match = context.Matches
                 .Include(m => m.PlayerMatches)
@@ -41,12 +43,13 @@ namespace Tests.Import
         }
 
         [Fact]
-        public void ImportMatch_ShouldAssign_EventsToCorrectPlayers()
+        public async Task ImportMatch_ShouldAssign_EventsToCorrectPlayers()
         {
             using var context = new ApplicationDataContext(_options);
             var importer = new MatchImporter(context);
 
-            importer.ImportMatch("TestData/Real-Barca");
+            await importer.ImportMatch("TestData/Real-Barca");
+            await context.SaveChangesAsync();
 
             var match = context.Matches
                 .Include(m => m.Events)
@@ -60,12 +63,13 @@ namespace Tests.Import
         }
 
         [Fact]
-        public void ImportMatch_ShouldNotContain_InvalidMinutes()
+        public async Task ImportMatch_ShouldNotContain_InvalidMinutes()
         {
             using var context = new ApplicationDataContext(_options);
             var importer = new MatchImporter(context);
 
-            importer.ImportMatch("TestData/Real-Barca");
+            await importer.ImportMatch("TestData/Real-Barca");
+            await context.SaveChangesAsync();
 
             var match = context.Matches
                 .Include(m => m.Events)
@@ -75,12 +79,13 @@ namespace Tests.Import
         }
 
         [Fact]
-        public void ImportMatch_ShouldParse_TeamsFromFolderName()
+        public async Task ImportMatch_ShouldParse_TeamsFromFolderName()
         {
             using var context = new ApplicationDataContext(_options);
             var importer = new MatchImporter(context);
 
-            importer.ImportMatch("TestData/Real-Barca");
+            await importer.ImportMatch("TestData/Real-Barca");
+            await context.SaveChangesAsync();
 
             var match = context.Matches.First();
 

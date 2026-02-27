@@ -12,7 +12,7 @@ import { filter } from 'rxjs';
   styleUrl: './match-list.css'
 })
 export class MatchList implements OnInit{
-  matches = signal<any[]>([]);
+  matches = signal<Match[]>([]);
 
   constructor(
     private http: HttpClient,
@@ -26,14 +26,24 @@ export class MatchList implements OnInit{
   loadMatches() {
     console.log('Loading matches...');
 
-    this.http.get<any[]>(`${environment.apiBaseUrl}/api/match/matches`)
+    this.http.get<Match[]>(`${environment.apiBaseUrl}/api/v1/matches`)
       .subscribe(data => {
         console.log('Matches received:', data);
         this.matches.set(data);
       });
   }
 
-  openMatch(id: number) {
-    this.router.navigate(['/match-details', id]);
+  openMatch(match: Match) {
+    console.log(match.id);
+
+    this.router.navigate(['/match-details', match.id]);
   }
+}
+
+export interface Match {
+  id: number;
+  homeTeam: string;
+  awayTeam: string;
+  matchDuration: number;
+  isLive : boolean
 }

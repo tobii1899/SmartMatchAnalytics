@@ -17,8 +17,8 @@ export class MatchImport {
   constructor(private http: HttpClient) {}
 
   importFolder() {
-    const body = { folderPath: this.folderPath }; // Wrap folderPath in a JSON object
-    this.http.post(`${environment.apiBaseUrl}/api/match/import-folder`, body, { responseType: 'text' })
+    const body = { path: this.folderPath }; // Wrap folderPath in a JSON object
+    this.http.post(`${environment.apiBaseUrl}/api/v1/matches`, body, { responseType: 'text' })
       .subscribe({
         next: (response) => this.message = response,
         error: (error) => this.message = `Error: ${error.error}`

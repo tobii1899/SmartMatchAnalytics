@@ -12,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './match-details.css'
 })
 export class MatchDetails implements OnInit {
-  matchDetails = signal<any | null>(null);
+  matchDetails = signal<MatchDetailsDto | null>(null);
   errorMessage = '';
 
   constructor(
@@ -28,7 +28,7 @@ export class MatchDetails implements OnInit {
       return;
     }
 
-    this.http.get<any>(`${environment.apiBaseUrl}/api/match/match-details-with-scores/${id}`)
+    this.http.get<MatchDetailsDto>(`${environment.apiBaseUrl}/api/v1/match/detailscore/${id}`)
       .subscribe({
         next: data => this.matchDetails.set(data),
         error: err => this.errorMessage = err.error
@@ -41,8 +41,6 @@ export class MatchDetails implements OnInit {
 
     let home = 0;
     let away = 0;
-
-    //logic for getscore
 
     return `(${home}:${away})`;
   }
@@ -64,4 +62,46 @@ export class MatchDetails implements OnInit {
       default: return '•';
     }
   }
+
+  getImpactScore(name : string){
+    console.log(this.matchDetails()?.players);
+    let impactScore =  this.matchDetails()?.impactScores?.find(m => m.player?.name == name)?.impactScore;
+
+    if (impactScore){
+     return impactScore > 10 ? 10 : impactScore < 0 ? 0 : impactScore;
+    }
+    return -1;
+  }
+}
+
+
+// Entsprechend den Dtos aus der WebApi:
+export interface MatchDetailsDto {
+  id: number;
+  homeTeam: string;
+  awayTeam: string;
+  matchDuration: number;
+  players: PlayerDto[];
+  events: EventDto[];
+  impactScores?: ImpactScoreDto[];
+}
+
+export interface PlayerDto {
+  id : number,
+  name: string;
+  team: string;
+  playedMinutes: number;
+  impactScore?: number | null;
+}
+
+export interface EventDto {
+  id : number,
+  name: string;
+  minute: number;
+  action: string;
+}
+
+export interface ImpactScoreDto {
+  player?: PlayerDto | null;
+  impactScore: number;
 }
