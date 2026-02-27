@@ -12,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './match-details.css'
 })
 export class MatchDetails implements OnInit {
-  matchDetails = signal<any | null>(null);
+  matchDetails = signal<MatchDetailsDto | null>(null);
   errorMessage = '';
 
   constructor(
@@ -42,8 +42,6 @@ export class MatchDetails implements OnInit {
     let home = 0;
     let away = 0;
 
-    //logic for getscore
-
     return `(${home}:${away})`;
   }
 
@@ -64,4 +62,36 @@ export class MatchDetails implements OnInit {
       default: return '•';
     }
   }
+}
+
+
+// Entsprechend den Dtos aus der WebApi:
+export interface MatchDetailsDto {
+  id: number;
+  homeTeam: string;
+  awayTeam: string;
+  matchDuration: number;
+  players: PlayerDto[];
+  events: EventDto[];
+  impactScores?: ImpactScoreDto[];
+}
+
+export interface PlayerDto {
+  id : number,
+  name: string;
+  team: string;
+  playedMinutes: number;
+  impactScore?: number | null;
+}
+
+export interface EventDto {
+  id : number,
+  name: string;
+  minute: number;
+  action: string;
+}
+
+export interface ImpactScoreDto {
+  player?: PlayerDto | null;
+  impactScore: number;
 }
